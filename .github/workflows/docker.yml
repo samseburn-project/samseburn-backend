@@ -33,7 +33,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ap-northeast-2
           secrets: |
-            /secret/backend
+            /secret/samseburn
           parse-json: false
 
       # 5. 빌드 전 그래들 권한 부여
