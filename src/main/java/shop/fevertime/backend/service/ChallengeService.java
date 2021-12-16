@@ -97,7 +97,7 @@ public class ChallengeService {
         String uploadImageUrl;
         // 이미지 첨부 안 했을 때 기본이미지
         if (image == null) {
-            uploadImageUrl = "https://fever-prac.s3.ap-northeast-2.amazonaws.com/challenge/challenge.jfif";
+            uploadImageUrl = "https://samseburn-bucket.s3.ap-northeast-2.amazonaws.com/challenge/challenge.jfif";
         } else {
             // 이미지 AWS S3 업로드
             uploadImageUrl = s3Uploader.upload(image, "challenge");
@@ -141,7 +141,7 @@ public class ChallengeService {
         }
 
         // 기존 이미지 S3에서 삭제 (기본 이미지 아닐 경우만 )
-        if (!Objects.equals(challenge.getImgUrl(), "https://fever-prac.s3.ap-northeast-2.amazonaws.com/challenge/challenge.jfif")) {
+        if (!Objects.equals(challenge.getImgUrl(), "https://samseburn-bucket.s3.ap-northeast-2.amazonaws.com/challenge/challenge.jfif")) {
             String[] ar = challenge.getImgUrl().split("/");
             s3Uploader.delete(ar[ar.length - 1], "challenge");
         }
