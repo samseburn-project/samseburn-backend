@@ -106,17 +106,19 @@ public class ChallengeHistoryService {
             throw new ApiRequestException("종료된 챌린지에 참여 취소할 수 없습니다.");
         }
 
-        ChallengeHistory challengeHistory = challengeHistoryRepository.findChallengeHistoryByChallengeStatusEquals(
-                ChallengeStatus.JOIN,
-                user,
-                challenge).orElseThrow(
-                () -> new ApiRequestException("해당 챌린지를 참여중인 기록이 없습니다.")
-        );
+//        ChallengeHistory challengeHistory = challengeHistoryRepository.findChallengeHistoryByChallengeStatusEquals(
+//                ChallengeStatus.JOIN,
+//                user,
+//                challenge).orElseThrow(
+//                () -> new ApiRequestException("해당 챌린지를 참여중인 기록이 없습니다.")
+//        );
 
         certificationRepository.findAllByChallengeAndUser(challenge, user)
                 .forEach(certi -> certificationService.deleteCertification(certi.getId(), user));
 
-        challengeHistory.cancel();
+        //참여 취소시 해당 챌린지히스토리 삭제
+        challengeHistoryRepository.deleteAll(
+                challengeHistoryRepository.findAllByChallengeAndChallengeStatusAndUserNot(challenge, ChallengeStatus.JOIN, user));
     }
 
     // 작업중
