@@ -14,9 +14,7 @@ import shop.fevertime.backend.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -54,12 +52,17 @@ public class ChallengeHistoryService {
         );
         //히스토리에서 해당 챌린지에 조인한 데이터 가져옴 -> 해당 유저 리스트 가져옴
         List<ChallengeHistory> status = challengeHistoryRepository.findAllByChallengeAndChallengeStatus(challenge, ChallengeStatus.JOIN);
-        List<User> userList = new ArrayList<>();
+
+        List<UserChallengeStatusResponseDto> userList = new ArrayList<>();
+
         for (ChallengeHistory history : status) {
-            userList.add(history.getUser());
+            userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission()));
         }
+        //찾아온 히스토리 데이터를 유저 리스트에 유저아이디로 조인해서 1주차 미션 여부 가져와야할듯?!
         return userList.stream().
-                map(user -> new UserCertifiesResponseDto(user, user.getCertificationList()))
+                map(UserChallengeStatusDto -> new UserCertifiesResponseDto(UserChallengeStatusDto.getUser(),
+                        UserChallengeStatusDto.getUser().getCertificationList(),
+                        UserChallengeStatusDto.getFirstWeekMission()))
                 .collect(Collectors.toList());
 
 //        return userRepository.findAllCertifiesByChallenge(challenge).stream()
@@ -72,7 +75,7 @@ public class ChallengeHistoryService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
-      
+
         if (challenge.getChallengeProgress() == ChallengeProgress.STOP) {
             throw new ApiRequestException("종료된 챌린지에 참여할 수 없습니다.");
         }
@@ -87,7 +90,8 @@ public class ChallengeHistoryService {
                 challenge,
                 now,
                 now.plusDays(7),
-                ChallengeStatus.JOIN);
+                ChallengeStatus.JOIN,
+                FirstWeekMission.NO);
 
         challengeHistoryRepository.save(challengeHistory);
     }
