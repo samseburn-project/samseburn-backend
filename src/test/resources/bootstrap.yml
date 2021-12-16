@@ -1,6 +1,6 @@
 aws:
   secretsmanager:
-    name: backend
+    name: samseburn
 cloud:
   aws:
     region:
