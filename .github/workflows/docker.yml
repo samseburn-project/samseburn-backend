@@ -37,8 +37,8 @@ jobs:
           parse-json: false
 
       # 5. 빌드 전 그래들 권한 부여
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Grant execute permission for gradlew -x test
+        run: chmod +x gradlew -x test
 
       # 6. 그래들 빌드
       - name: Build with Gradle
