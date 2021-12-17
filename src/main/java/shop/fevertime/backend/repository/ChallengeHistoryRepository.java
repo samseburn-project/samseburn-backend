@@ -29,7 +29,7 @@ public interface ChallengeHistoryRepository extends JpaRepository<ChallengeHisto
 
     List<ChallengeHistory> findAllByChallengeAndChallengeStatus(Challenge challenge, ChallengeStatus challengeStatus);
 
-    List<ChallengeHistory> findDistinctChallengeByOrderByCreatedDate(User user);
+    List<ChallengeHistory> findAllByUser(User user);
 
 
 

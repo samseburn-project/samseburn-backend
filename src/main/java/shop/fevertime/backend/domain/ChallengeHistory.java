@@ -45,7 +45,8 @@ public class ChallengeHistory {
             Challenge challenge,
             LocalDateTime createdDate,
             LocalDateTime missionDate,
-            ChallengeStatus challengeStatus
+            ChallengeStatus challengeStatus,
+            int retryCount
     ) {
         ChallengeHistoryValidator.validateCreate(user, challenge, createdDate, missionDate, challengeStatus);
         this.user = user;
@@ -53,6 +54,7 @@ public class ChallengeHistory {
         this.createdDate = createdDate;
         this.missionDate = missionDate;
         this.challengeStatus = challengeStatus;
+        this.retryCount = retryCount;
     }
 
     public void cancel() {
@@ -61,5 +63,13 @@ public class ChallengeHistory {
 
     public void fail() {
         this.challengeStatus = ChallengeStatus.RETRY;
+    }
+
+    public void retry() {
+        this.challengeStatus = ChallengeStatus.JOIN;
+    }
+
+    public void addRetryCount() {
+        this.retryCount++;
     }
 }

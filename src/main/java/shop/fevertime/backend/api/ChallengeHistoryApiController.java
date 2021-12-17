@@ -62,4 +62,14 @@ public class ChallengeHistoryApiController {
         challengeHistoryService.cancelChallenge(challengeId, userDetails.getUser());
         return new ResultResponseDto("success", "챌린지 참여 취소되었습니다.");
     }
+
+    @PutMapping("/retry")
+    public ResultResponseDto continueChallenge(
+            @PathVariable Long challengeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        challengeHistoryService.retryChallenge(challengeId, userDetails.getUser());
+        return new ResultResponseDto("success", "재도전 상태로 변경되었습니다..");
+    }
+
 }

@@ -14,9 +14,7 @@ import shop.fevertime.backend.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -87,7 +85,8 @@ public class ChallengeHistoryService {
                 challenge,
                 now,
                 now.plusDays(7),
-                ChallengeStatus.JOIN);
+                ChallengeStatus.JOIN,
+                0);
 
         challengeHistoryRepository.save(challengeHistory);
     }
@@ -118,12 +117,22 @@ public class ChallengeHistoryService {
     // 작업중
     public List<UserChallengeInfoDto> getChallengesByUser(User user) {
 
-        return challengeHistoryRepository.findDistinctChallengeByOrderByCreatedDate(user).stream()
+        return challengeHistoryRepository.findAllByUser(user).stream()
                 .map(challengeHistory -> new UserChallengeInfoDto(
                         challengeHistory.getChallenge(), challengeHistory,
-                        certificationRepository.findAllByChallengeAndUser(challengeHistory.getChallenge(), user),
-                        challengeHistoryRepository.countChallengeHistoriesByChallengeAndUserAndChallengeStatus(challengeHistory.getChallenge(), user, ChallengeStatus.FAIL)
-
+                        certificationRepository.findAllByChallengeAndUser(challengeHistory.getChallenge(), user)
                 )).collect(Collectors.toList());
+    }
+
+    // 재도전 챌린지
+    @Transactional
+    public void retryChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("존재하지 않는 챌린지입니다.")
+        );
+        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        challengeHistory.retry(); // 해당 챌린지 상태값 RETRY -> JOIN 으로 변경
+
+        challengeHistory.addRetryCount(); // RETRY COUNT +1
     }
 }
