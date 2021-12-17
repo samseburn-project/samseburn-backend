@@ -37,11 +37,9 @@ public class ChallengeHistoryService {
                 .map(CertificationResponseDto::new)
                 .collect(Collectors.toList());
         // 챌린지 참여 내역
-        List<ChallengeHistoryResponseDto> userHistories = challengeHistoryRepository.findAllByChallengeAndUser(challenge, user).stream()
-                .map(ChallengeHistoryResponseDto::new)
-                .collect(Collectors.toList());
+        ChallengeHistoryResponseDto userHistory = new ChallengeHistoryResponseDto(challengeHistoryRepository.findByChallengeAndUser(challenge, user));
 
-        return new ChallengeUserResponseDto(user, certifies, userHistories);
+        return new ChallengeUserResponseDto(user, certifies, userHistory);
     }
 
     @Transactional
@@ -64,10 +62,6 @@ public class ChallengeHistoryService {
                         UserChallengeStatusDto.getUser().getCertificationList(),
                         UserChallengeStatusDto.getFirstWeekMission()))
                 .collect(Collectors.toList());
-
-//        return userRepository.findAllCertifiesByChallenge(challenge).stream()
-//                .map(user -> new UserCertifiesResponseDto(user, user.getCertificationList()))
-//                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -80,9 +74,8 @@ public class ChallengeHistoryService {
             throw new ApiRequestException("종료된 챌린지에 참여할 수 없습니다.");
         }
 
-        //해당 챌린지와 유저로 히스토리 찾아와서 fail 갯수 가져오기
-        List<ChallengeHistory> user1 = challengeHistoryRepository.findAllByChallengeAndUserAndChallengeStatus(challenge, user, ChallengeStatus.FAIL);
-        if (user1.size() >= 3) throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
+        //해당 챌린지와 유저로 히스토리 찾아와서 retry개수 컬럼 값 확인
+
 
         LocalDateTime now = LocalDateTime.now();
         ChallengeHistory challengeHistory = new ChallengeHistory(
@@ -105,20 +98,12 @@ public class ChallengeHistoryService {
         if (challenge.getChallengeProgress() == ChallengeProgress.STOP) {
             throw new ApiRequestException("종료된 챌린지에 참여 취소할 수 없습니다.");
         }
-
-//        ChallengeHistory challengeHistory = challengeHistoryRepository.findChallengeHistoryByChallengeStatusEquals(
-//                ChallengeStatus.JOIN,
-//                user,
-//                challenge).orElseThrow(
-//                () -> new ApiRequestException("해당 챌린지를 참여중인 기록이 없습니다.")
-//        );
-
         certificationRepository.findAllByChallengeAndUser(challenge, user)
                 .forEach(certi -> certificationService.deleteCertification(certi.getId(), user));
 
-        //참여 취소시 해당 챌린지히스토리 삭제
-        challengeHistoryRepository.deleteAll(
-                challengeHistoryRepository.findAllByChallengeAndChallengeStatusAndUserNot(challenge, ChallengeStatus.JOIN, user));
+        //참여 취소시 해당 챌린지히스토리 삭제 (완전 다)
+        challengeHistoryRepository.delete(
+                challengeHistoryRepository.findByChallengeAndUser(challenge, user));
     }
 
     // 작업중
@@ -131,5 +116,25 @@ public class ChallengeHistoryService {
                         challengeHistoryRepository.countChallengeHistoriesByChallengeAndUserAndChallengeStatus(challengeHistory.getChallenge(), user, ChallengeStatus.FAIL)
 
                 )).collect(Collectors.toList());
+    }
+
+
+    public void continueChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
+        );
+        ChallengeHistory history = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+
+        //히스토리에 FirstWeekMission.YES로 업데이트
+        history.continueChallenge();
+    }
+
+    public void stopChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
+        );
+        //그만두기시 해당 챌린지히스토리 삭제 (완전 다)
+        challengeHistoryRepository.delete(
+                challengeHistoryRepository.findByChallengeAndUser(challenge, user));
     }
 }

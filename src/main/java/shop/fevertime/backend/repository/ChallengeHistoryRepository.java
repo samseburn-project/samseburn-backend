@@ -17,9 +17,7 @@ public interface ChallengeHistoryRepository extends JpaRepository<ChallengeHisto
     @Query("select ch " + "from ChallengeHistory ch " + "where ch.challengeStatus =:challengeStatus " + "and ch.user =:user " + "and ch.challenge =:challenge")
     Optional<ChallengeHistory> findChallengeHistoryByChallengeStatusEquals(@Param("challengeStatus") ChallengeStatus challengeStatus, @Param("user") User user, @Param("challenge") Challenge challenge);
 
-    List<ChallengeHistory> findAllByChallengeAndUser(Challenge challenge, User user);
-
-    List<ChallengeHistory> findAllByChallengeAndUserAndChallengeStatus(Challenge challenge, User user, ChallengeStatus challengeStatus);
+    ChallengeHistory findByChallengeAndUser(Challenge challenge, User user);
 
     int countChallengeHistoriesByChallengeAndUserAndChallengeStatus(Challenge challenge, User user, ChallengeStatus challengeStatus);
 

@@ -62,4 +62,28 @@ public class ChallengeHistoryApiController {
         challengeHistoryService.cancelChallenge(challengeId, userDetails.getUser());
         return new ResultResponseDto("success", "챌린지 참여 취소되었습니다.");
     }
+
+    /**
+     * 1주차 미션 성공 후 챌린지 계속하기 선택 API
+     */
+    @PutMapping("/continue")
+    public ResultResponseDto continueChallenge(
+            @PathVariable Long challengeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        challengeHistoryService.continueChallenge(challengeId, userDetails.getUser());
+        return new ResultResponseDto("success", "챌린지를 계속 참여하실 수 있습니다.");
+    }
+
+    /**
+     * 1주차 미션 성공 후 챌린지 그만두기 선택 API
+     */
+    @DeleteMapping("/continue")
+    public ResultResponseDto stopChallenge(
+            @PathVariable Long challengeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        challengeHistoryService.stopChallenge(challengeId, userDetails.getUser());
+        return new ResultResponseDto("success", "챌린지 그만두기가 완료되었습니다.");
+    }
 }

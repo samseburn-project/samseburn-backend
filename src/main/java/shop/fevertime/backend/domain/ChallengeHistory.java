@@ -65,4 +65,8 @@ public class ChallengeHistory {
     public void fail() {
         this.challengeStatus = ChallengeStatus.FAIL;
     }
+
+    public void continueChallenge() {
+        this.firstWeekMission = FirstWeekMission.YES;
+    }
 }
