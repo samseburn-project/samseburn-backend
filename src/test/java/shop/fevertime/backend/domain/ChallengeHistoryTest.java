@@ -193,7 +193,7 @@ class ChallengeHistoryTest {
             assertThat(challengeHistory.getChallenge()).isEqualTo(challenge);
             assertThat(challengeHistory.getCreatedDate()).isEqualTo(createdDate);
             assertThat(challengeHistory.getMissionDate()).isEqualTo(missionDate);
-            assertThat(challengeHistory.getChallengeStatus()).isEqualTo(ChallengeStatus.FAIL);
+            assertThat(challengeHistory.getChallengeStatus()).isEqualTo(ChallengeStatus.RETRY);
         }
     }
 }
