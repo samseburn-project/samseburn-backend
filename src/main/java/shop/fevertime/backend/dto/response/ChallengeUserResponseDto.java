@@ -17,18 +17,18 @@ public class ChallengeUserResponseDto {
     // Certification List
     private List<CertificationResponseDto> certifies;
 
-    // user ChallengeHistory
-    private ChallengeHistoryResponseDto userHistory;
+    // user ChallengeHistory List
+    private List<ChallengeHistoryResponseDto> userHistories;
 
     public ChallengeUserResponseDto(
             User user,
             List<CertificationResponseDto> certifies,
-            ChallengeHistoryResponseDto userHistory
+            List<ChallengeHistoryResponseDto> userHistories
     ) {
         this.userId = user.getId();
         this.username = user.getUsername();
         this.userimgUrl = user.getImgUrl();
         this.certifies = certifies;
-        this.userHistory = userHistory;
+        this.userHistories = userHistories;
     }
 }
