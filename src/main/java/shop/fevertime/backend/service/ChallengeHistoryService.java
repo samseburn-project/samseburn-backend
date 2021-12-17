@@ -51,18 +51,19 @@ public class ChallengeHistoryService {
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
         //히스토리에서 해당 챌린지에 조인한 데이터 가져옴 -> 해당 유저 리스트 가져옴
-        List<ChallengeHistory> status = challengeHistoryRepository.findAllByChallengeAndChallengeStatus(challenge, ChallengeStatus.JOIN);
+        List<ChallengeHistory> histories = challengeHistoryRepository.findAllByChallengeAndChallengeStatus(challenge, ChallengeStatus.JOIN);
 
         List<UserChallengeStatusResponseDto> userList = new ArrayList<>();
 
-        for (ChallengeHistory history : status) {
+        //찾아온 히스토리 데이터에서 유저와 1주차 미션 여부 가져와야할듯?!
+        for (ChallengeHistory history : histories) {
             userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission()));
         }
-        //찾아온 히스토리 데이터를 유저 리스트에 유저아이디로 조인해서 1주차 미션 여부 가져와야할듯?!
+
         return userList.stream().
-                map(UserChallengeStatusDto -> new UserCertifiesResponseDto(UserChallengeStatusDto.getUser(),
-                        UserChallengeStatusDto.getUser().getCertificationList(),
-                        UserChallengeStatusDto.getFirstWeekMission()))
+                map(UserChallengeStatusResponseDto -> new UserCertifiesResponseDto(UserChallengeStatusResponseDto.getUser(),
+                        UserChallengeStatusResponseDto.getUser().getCertificationList(),
+                        UserChallengeStatusResponseDto.getFirstWeekMission()))
                 .collect(Collectors.toList());
     }
 
@@ -121,6 +122,7 @@ public class ChallengeHistoryService {
     }
 
 
+    @Transactional
     public void continueChallenge(Long challengeId, User user) {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
@@ -131,6 +133,7 @@ public class ChallengeHistoryService {
         history.continueChallenge();
     }
 
+    @Transactional
     public void stopChallenge(Long challengeId, User user) {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
