@@ -17,8 +17,8 @@ public class ChallengeResponseDto {
     private Long challengeId;
     private String title;
     private String description;
-    private String startDate;
-    private String endDate;
+    private String challengeStartDate;
+    private String challengeEndDate;
     private int limitPerson;
     private LocationType locationType;
     private String address;
@@ -31,8 +31,8 @@ public class ChallengeResponseDto {
         this.title = challenge.getTitle();
         this.description = challenge.getDescription();
         this.imgUrl = challenge.getImgUrl();
-        this.startDate = challenge.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        this.endDate = challenge.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.challengeStartDate = challenge.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.challengeEndDate = challenge.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.limitPerson = challenge.getLimitPerson();
         this.locationType = challenge.getLocationType();
         this.address = challenge.getAddress();
