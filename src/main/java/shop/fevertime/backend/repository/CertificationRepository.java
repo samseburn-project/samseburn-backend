@@ -12,8 +12,6 @@ public interface CertificationRepository extends JpaRepository<Certification, Lo
 
     void deleteAllByChallenge(Challenge challenge);
 
-    List<Certification> findAllByChallengeId(Long challengeId);
-
     List<Certification> findAllByChallenge(Challenge challenge);
 
     List<Certification> findAllByChallengeAndUser(Challenge challenge, User user);
