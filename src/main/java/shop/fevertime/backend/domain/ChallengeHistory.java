@@ -60,6 +60,7 @@ public class ChallengeHistory {
         this.missionDate = missionDate;
         this.challengeStatus = challengeStatus;
         this.retryCount = retryCount;
+        this.firstWeekMission = firstWeekMission;
     }
 
     public void cancel() {
@@ -76,5 +77,9 @@ public class ChallengeHistory {
 
     public void addRetryCount() {
         this.retryCount++;
+    }
+
+    public void continueChallenge() {
+        this.firstWeekMission = FirstWeekMission.YES;
     }
 }

@@ -21,8 +21,6 @@ public interface ChallengeHistoryRepository extends JpaRepository<ChallengeHisto
 
     ChallengeHistory findByChallengeAndUser(Challenge challenge, User user);
 
-
-
     int countChallengeHistoriesByChallengeAndUserAndChallengeStatus(Challenge challenge, User user, ChallengeStatus challengeStatus);
 
     long countDistinctUserByChallengeAndChallengeStatus(Challenge challenge, ChallengeStatus challengeStatus);
@@ -30,9 +28,6 @@ public interface ChallengeHistoryRepository extends JpaRepository<ChallengeHisto
     List<ChallengeHistory> findAllByChallengeAndChallengeStatus(Challenge challenge, ChallengeStatus challengeStatus);
 
     List<ChallengeHistory> findAllByUser(User user);
-
-
-
 
     List<ChallengeHistory> findAllByChallengeAndChallengeStatusAndUserNot(Challenge challenge, ChallengeStatus challengeStatus, User user);
 

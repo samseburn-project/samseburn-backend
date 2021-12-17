@@ -36,7 +36,7 @@ public class UserService {
         String kakaoId = userInfo.getId();
         String nickname = userInfo.getNickname();
         String email = userInfo.getEmail();
-        String defaultimgUrl = "https://fever-prac.s3.ap-northeast-2.amazonaws.com/user/SpartaIconScale7.png";
+        String defaultimgUrl = "https://samseburn-bucket.s3.ap-northeast-2.amazonaws.com/user/SpartaIconScale7.png";
 
         // DB 에 중복된 Kakao Id 가 있는지 확인
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
@@ -69,7 +69,7 @@ public class UserService {
             return;
         }
         // 기존 이미지 S3에서 삭제 (기본 이미지 아닐 경우만 )
-        if (!Objects.equals(findUser.getImgUrl(), "https://fever-prac.s3.ap-northeast-2.amazonaws.com/user/SpartaIconScale7.png")) {
+        if (!Objects.equals(findUser.getImgUrl(), "https://samseburn-bucket.s3.ap-northeast-2.amazonaws.com/user/SpartaIconScale7.png")) {
             String[] ar = findUser.getImgUrl().split("/");
             s3Uploader.delete(ar[ar.length - 1], "user");
         }
