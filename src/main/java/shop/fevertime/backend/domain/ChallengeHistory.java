@@ -37,12 +37,17 @@ public class ChallengeHistory {
     @Enumerated(value = EnumType.STRING)
     private ChallengeStatus challengeStatus;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private FirstWeekMission firstWeekMission;
+
     public ChallengeHistory(
             User user,
             Challenge challenge,
             LocalDateTime createdDate,
             LocalDateTime missionDate,
-            ChallengeStatus challengeStatus
+            ChallengeStatus challengeStatus,
+            FirstWeekMission firstWeekMission
     ) {
         ChallengeHistoryValidator.validateCreate(user, challenge, createdDate, missionDate, challengeStatus);
         this.user = user;
@@ -50,6 +55,7 @@ public class ChallengeHistory {
         this.createdDate = createdDate;
         this.missionDate = missionDate;
         this.challengeStatus = challengeStatus;
+        this.firstWeekMission = firstWeekMission;
     }
 
     public void cancel() {
@@ -58,5 +64,9 @@ public class ChallengeHistory {
 
     public void fail() {
         this.challengeStatus = ChallengeStatus.FAIL;
+    }
+
+    public void continueChallenge() {
+        this.firstWeekMission = FirstWeekMission.YES;
     }
 }

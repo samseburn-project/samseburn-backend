@@ -14,9 +14,7 @@ import shop.fevertime.backend.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -53,18 +51,20 @@ public class ChallengeHistoryService {
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
         //히스토리에서 해당 챌린지에 조인한 데이터 가져옴 -> 해당 유저 리스트 가져옴
-        List<ChallengeHistory> status = challengeHistoryRepository.findAllByChallengeAndChallengeStatus(challenge, ChallengeStatus.JOIN);
-        List<User> userList = new ArrayList<>();
-        for (ChallengeHistory history : status) {
-            userList.add(history.getUser());
-        }
-        return userList.stream().
-                map(user -> new UserCertifiesResponseDto(user, user.getCertificationList()))
-                .collect(Collectors.toList());
+        List<ChallengeHistory> histories = challengeHistoryRepository.findAllByChallengeAndChallengeStatus(challenge, ChallengeStatus.JOIN);
 
-//        return userRepository.findAllCertifiesByChallenge(challenge).stream()
-//                .map(user -> new UserCertifiesResponseDto(user, user.getCertificationList()))
-//                .collect(Collectors.toList());
+        List<UserChallengeStatusResponseDto> userList = new ArrayList<>();
+
+        //찾아온 히스토리 데이터에서 유저와 1주차 미션 여부 가져와야할듯?!
+        for (ChallengeHistory history : histories) {
+            userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission()));
+        }
+
+        return userList.stream().
+                map(UserChallengeStatusResponseDto -> new UserCertifiesResponseDto(UserChallengeStatusResponseDto.getUser(),
+                        UserChallengeStatusResponseDto.getUser().getCertificationList(),
+                        UserChallengeStatusResponseDto.getFirstWeekMission()))
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -72,14 +72,13 @@ public class ChallengeHistoryService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
-      
+
         if (challenge.getChallengeProgress() == ChallengeProgress.STOP) {
             throw new ApiRequestException("종료된 챌린지에 참여할 수 없습니다.");
         }
 
-        //해당 챌린지와 유저로 히스토리 찾아와서 fail 갯수 가져오기
-        List<ChallengeHistory> user1 = challengeHistoryRepository.findAllByChallengeAndUserAndChallengeStatus(challenge, user, ChallengeStatus.FAIL);
-        if (user1.size() >= 3) throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
+        //해당 챌린지와 유저로 히스토리 찾아와서 retry개수 컬럼 값 확인
+
 
         LocalDateTime now = LocalDateTime.now();
         ChallengeHistory challengeHistory = new ChallengeHistory(
@@ -87,7 +86,8 @@ public class ChallengeHistoryService {
                 challenge,
                 now,
                 now.plusDays(7),
-                ChallengeStatus.JOIN);
+                ChallengeStatus.JOIN,
+                FirstWeekMission.NO);
 
         challengeHistoryRepository.save(challengeHistory);
     }
@@ -101,18 +101,12 @@ public class ChallengeHistoryService {
         if (challenge.getChallengeProgress() == ChallengeProgress.STOP) {
             throw new ApiRequestException("종료된 챌린지에 참여 취소할 수 없습니다.");
         }
-
-        ChallengeHistory challengeHistory = challengeHistoryRepository.findChallengeHistoryByChallengeStatusEquals(
-                ChallengeStatus.JOIN,
-                user,
-                challenge).orElseThrow(
-                () -> new ApiRequestException("해당 챌린지를 참여중인 기록이 없습니다.")
-        );
-
         certificationRepository.findAllByChallengeAndUser(challenge, user)
                 .forEach(certi -> certificationService.deleteCertification(certi.getId(), user));
 
-        challengeHistory.cancel();
+        //참여 취소시 해당 챌린지히스토리 삭제 (완전 다)
+        challengeHistoryRepository.delete(
+                challengeHistoryRepository.findByChallengeAndUser(challenge, user));
     }
 
     // 작업중
@@ -125,5 +119,27 @@ public class ChallengeHistoryService {
                         challengeHistoryRepository.countChallengeHistoriesByChallengeAndUserAndChallengeStatus(challengeHistory.getChallenge(), user, ChallengeStatus.FAIL)
 
                 )).collect(Collectors.toList());
+    }
+
+
+    @Transactional
+    public void continueChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
+        );
+        ChallengeHistory history = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+
+        //히스토리에 FirstWeekMission.YES로 업데이트
+        history.continueChallenge();
+    }
+
+    @Transactional
+    public void stopChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
+        );
+        //그만두기시 해당 챌린지히스토리 삭제 (완전 다)
+        challengeHistoryRepository.delete(
+                challengeHistoryRepository.findByChallengeAndUser(challenge, user));
     }
 }
