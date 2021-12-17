@@ -37,12 +37,21 @@ public class ChallengeHistory {
     @Enumerated(value = EnumType.STRING)
     private ChallengeStatus challengeStatus;
 
+    @Column(nullable = false)
+    private int retryCount;
+
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private FirstWeekMission firstWeekMission;
+
     public ChallengeHistory(
             User user,
             Challenge challenge,
             LocalDateTime createdDate,
             LocalDateTime missionDate,
-            ChallengeStatus challengeStatus
+            ChallengeStatus challengeStatus,
+            FirstWeekMission firstWeekMission,
+            int retryCount
     ) {
         ChallengeHistoryValidator.validateCreate(user, challenge, createdDate, missionDate, challengeStatus);
         this.user = user;
@@ -50,13 +59,27 @@ public class ChallengeHistory {
         this.createdDate = createdDate;
         this.missionDate = missionDate;
         this.challengeStatus = challengeStatus;
+        this.retryCount = retryCount;
+        this.firstWeekMission = firstWeekMission;
     }
 
     public void cancel() {
-        this.challengeStatus = ChallengeStatus.CANCEL;
+        this.challengeStatus = ChallengeStatus.FAIL;
     }
 
     public void fail() {
-        this.challengeStatus = ChallengeStatus.FAIL;
+        this.challengeStatus = ChallengeStatus.RETRY;
+    }
+
+    public void retry() {
+        this.challengeStatus = ChallengeStatus.JOIN;
+    }
+
+    public void addRetryCount() {
+        this.retryCount++;
+    }
+
+    public void continueChallenge() {
+        this.firstWeekMission = FirstWeekMission.YES;
     }
 }
