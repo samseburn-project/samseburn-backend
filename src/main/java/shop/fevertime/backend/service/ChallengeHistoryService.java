@@ -137,6 +137,7 @@ public class ChallengeHistoryService {
         challengeHistory.retry(); // 해당 챌린지 상태값 RETRY -> JOIN 으로 변경
 
         challengeHistory.addRetryCount(); // RETRY COUNT +1
+    }
 
     @Transactional
     public void continueChallenge(Long challengeId, User user) {
