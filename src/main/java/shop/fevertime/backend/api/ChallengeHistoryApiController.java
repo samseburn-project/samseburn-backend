@@ -54,7 +54,7 @@ public class ChallengeHistoryApiController {
     /**
      * 챌린지 참여 취소 API
      */
-    @PutMapping("/join")
+    @DeleteMapping("/join")
     public ResultResponseDto cancelChallenge(
             @PathVariable Long challengeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
