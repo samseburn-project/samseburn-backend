@@ -86,6 +86,7 @@ public class ChallengeHistoryService {
                 now,
                 now.plusDays(7),
                 ChallengeStatus.JOIN,
+                FirstWeekMission.NO,
                 0);
 
         challengeHistoryRepository.save(challengeHistory);
@@ -114,15 +115,17 @@ public class ChallengeHistoryService {
         challengeHistory.cancel();
     }
 
-    // 작업중
+    // 연관된 챌린지
     public List<UserChallengeInfoDto> getChallengesByUser(User user) {
-
         return challengeHistoryRepository.findAllByUser(user).stream()
                 .map(challengeHistory -> new UserChallengeInfoDto(
-                        challengeHistory.getChallenge(), challengeHistory,
+                        challengeHistory.getChallenge(),
+                        challengeHistory,
                         certificationRepository.findAllByChallengeAndUser(challengeHistory.getChallenge(), user)
+
                 )).collect(Collectors.toList());
     }
+
 
     // 재도전 챌린지
     @Transactional
@@ -131,6 +134,9 @@ public class ChallengeHistoryService {
                 () -> new ApiRequestException("존재하지 않는 챌린지입니다.")
         );
         ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        if (challengeHistory.getRetryCount() >= 3) {
+            throw new ApiRequestException("재도전은 3번까지 가능합니다.");
+        }
         challengeHistory.retry(); // 해당 챌린지 상태값 RETRY -> JOIN 으로 변경
 
         challengeHistory.addRetryCount(); // RETRY COUNT +1

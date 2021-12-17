@@ -40,12 +40,17 @@ public class ChallengeHistory {
     @Column(nullable = false)
     private int retryCount;
 
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private FirstWeekMission firstWeekMission;
+
     public ChallengeHistory(
             User user,
             Challenge challenge,
             LocalDateTime createdDate,
             LocalDateTime missionDate,
             ChallengeStatus challengeStatus,
+            FirstWeekMission firstWeekMission,
             int retryCount
     ) {
         ChallengeHistoryValidator.validateCreate(user, challenge, createdDate, missionDate, challengeStatus);
