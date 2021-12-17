@@ -64,7 +64,7 @@ public class ChallengeHistoryApiController {
     }
 
     @PutMapping("/retry")
-    public ResultResponseDto continueChallenge(
+    public ResultResponseDto retryChallenge(
             @PathVariable Long challengeId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
