@@ -11,8 +11,8 @@ import shop.fevertime.backend.domain.LocationType;
 public class ChallengeRequestDto {
     private String title;
     private String description;
-    private String startDate;
-    private String endDate;
+    private String challengeStartDate;
+    private String challengeEndDate;
     private int limitPerson;
     private LocationType locationType;
     private String address;
