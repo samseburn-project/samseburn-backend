@@ -22,6 +22,8 @@ class ChallengeHistoryTest {
         private LocalDateTime createdDate;
         private LocalDateTime missionDate;
         private ChallengeStatus challengeStatus;
+        private FirstWeekMission firstWeekMission;
+        private int retryCount;
 
         @BeforeEach
         void setup() {
@@ -31,6 +33,8 @@ class ChallengeHistoryTest {
             createdDate = LocalDateTime.now();
             missionDate = LocalDateTime.now().plusDays(7);
             challengeStatus = ChallengeStatus.JOIN;
+            firstWeekMission = FirstWeekMission.NO;
+            retryCount = 0;
         }
 
         @Test
@@ -39,7 +43,7 @@ class ChallengeHistoryTest {
             // given
 
             // when
-            ChallengeHistory challengeHistory = new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus);
+            ChallengeHistory challengeHistory = new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus, firstWeekMission, retryCount);
             // then
             assertThat(challengeHistory.getId()).isNull();
             assertThat(challengeHistory.getUser()).isEqualTo(user);
@@ -64,7 +68,7 @@ class ChallengeHistoryTest {
                     user = null;
                     // when
                     Exception exception = assertThrows(ApiRequestException.class,
-                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus));
+                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus, firstWeekMission, retryCount));
                     // then
                     assertThat(exception.getMessage()).isEqualTo("유저 Id 가 유효하지 않습니다.");
                 }
@@ -81,7 +85,7 @@ class ChallengeHistoryTest {
                     challenge = null;
                     // when
                     Exception exception = assertThrows(ApiRequestException.class,
-                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus));
+                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus, firstWeekMission, retryCount));
                     // then
                     assertThat(exception.getMessage()).isEqualTo("챌린지가 유효하지 않습니다.");
                 }
@@ -98,7 +102,7 @@ class ChallengeHistoryTest {
                     createdDate = null;
                     // when
                     Exception exception = assertThrows(ApiRequestException.class,
-                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus));
+                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus, firstWeekMission, retryCount));
                     // then
                     assertThat(exception.getMessage()).isEqualTo("챌린지 참가 날짜가 없습니다.");
                 }
@@ -115,7 +119,7 @@ class ChallengeHistoryTest {
                     missionDate = null;
                     // when
                     Exception exception = assertThrows(ApiRequestException.class,
-                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus));
+                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus,  FirstWeekMission.NO,retryCount));
                     // then
                     assertThat(exception.getMessage()).isEqualTo("챌린지 미션 날짜가 없습니다.");
                 }
@@ -132,7 +136,7 @@ class ChallengeHistoryTest {
                     challengeStatus = null;
                     // when
                     Exception exception = assertThrows(ApiRequestException.class,
-                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus));
+                            () -> new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus,  FirstWeekMission.NO,retryCount));
                     // then
                     assertThat(exception.getMessage()).isEqualTo("챌린지 참여 상태가 없습니다.");
                 }
@@ -164,7 +168,7 @@ class ChallengeHistoryTest {
         @DisplayName("정상 케이스_취소")
         void update_Normal1() {
             // given
-            ChallengeHistory challengeHistory = new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus);
+            ChallengeHistory challengeHistory = new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus, FirstWeekMission.NO,0);
             // when
             challengeHistory.cancel();
             // then
@@ -173,14 +177,14 @@ class ChallengeHistoryTest {
             assertThat(challengeHistory.getChallenge()).isEqualTo(challenge);
             assertThat(challengeHistory.getCreatedDate()).isEqualTo(createdDate);
             assertThat(challengeHistory.getMissionDate()).isEqualTo(missionDate);
-            assertThat(challengeHistory.getChallengeStatus()).isEqualTo(ChallengeStatus.CANCEL);
+            assertThat(challengeHistory.getChallengeStatus()).isEqualTo(ChallengeStatus.FAIL);
         }
 
         @Test
         @DisplayName("정상 케이스_미션실패")
         void update_Normal2() {
             // given
-            ChallengeHistory challengeHistory = new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus);
+            ChallengeHistory challengeHistory = new ChallengeHistory(user, challenge, createdDate, missionDate, challengeStatus, FirstWeekMission.NO, 0);
             // when
             challengeHistory.fail();
             // then

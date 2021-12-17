@@ -77,8 +77,9 @@ public class ChallengeHistoryService {
             throw new ApiRequestException("종료된 챌린지에 참여할 수 없습니다.");
         }
 
-        //해당 챌린지와 유저로 히스토리 찾아와서 retry개수 컬럼 값 확인
-
+        //해당 챌린지와 유저로 히스토리 찾아와서 fail 갯수 가져오기
+        ChallengeHistory user1 = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        if (user1.getRetryCount() >= 3) throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
 
         LocalDateTime now = LocalDateTime.now();
         ChallengeHistory challengeHistory = new ChallengeHistory(
@@ -87,7 +88,8 @@ public class ChallengeHistoryService {
                 now,
                 now.plusDays(7),
                 ChallengeStatus.JOIN,
-                FirstWeekMission.NO);
+                FirstWeekMission.NO,
+                0);
 
         challengeHistoryRepository.save(challengeHistory);
     }
@@ -109,18 +111,32 @@ public class ChallengeHistoryService {
                 challengeHistoryRepository.findByChallengeAndUser(challenge, user));
     }
 
-    // 작업중
+    // 연관된 챌린지
     public List<UserChallengeInfoDto> getChallengesByUser(User user) {
-
         return challengeHistoryRepository.findAllByUser(user).stream()
                 .map(challengeHistory -> new UserChallengeInfoDto(
-                        challengeHistory.getChallenge(), challengeHistory,
-                        certificationRepository.findAllByChallengeAndUser(challengeHistory.getChallenge(), user),
-                        challengeHistoryRepository.countChallengeHistoriesByChallengeAndUserAndChallengeStatus(challengeHistory.getChallenge(), user, ChallengeStatus.FAIL)
+                        challengeHistory.getChallenge(),
+                        challengeHistory,
+                        certificationRepository.findAllByChallengeAndUser(challengeHistory.getChallenge(), user)
 
                 )).collect(Collectors.toList());
     }
 
+
+
+    // 재도전 챌린지
+    @Transactional
+    public void retryChallenge(Long challengeId, User user) {
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("존재하지 않는 챌린지입니다.")
+        );
+        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        if (challengeHistory.getRetryCount() >= 3) {
+            throw new ApiRequestException("재도전은 3번까지 가능합니다.");
+        }
+        challengeHistory.retry(); // 해당 챌린지 상태값 RETRY -> JOIN 으로 변경
+
+        challengeHistory.addRetryCount(); // RETRY COUNT +1
 
     @Transactional
     public void continueChallenge(Long challengeId, User user) {

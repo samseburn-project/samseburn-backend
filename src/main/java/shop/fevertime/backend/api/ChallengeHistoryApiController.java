@@ -64,6 +64,19 @@ public class ChallengeHistoryApiController {
     }
 
     /**
+     * 챌린지 재도전 API
+     */
+    @PutMapping("/retry")
+    public ResultResponseDto retryChallenge(
+            @PathVariable Long challengeId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        challengeHistoryService.retryChallenge(challengeId, userDetails.getUser());
+        return new ResultResponseDto("success", "재도전 상태로 변경되었습니다.");
+    }
+
+
+    /**
      * 1주차 미션 성공 후 챌린지 계속하기 선택 API
      */
     @PutMapping("/continue")
