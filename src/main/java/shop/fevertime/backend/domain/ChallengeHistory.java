@@ -37,6 +37,9 @@ public class ChallengeHistory {
     @Enumerated(value = EnumType.STRING)
     private ChallengeStatus challengeStatus;
 
+    @Column(nullable = false)
+    private int retryCount;
+
     public ChallengeHistory(
             User user,
             Challenge challenge,
@@ -53,10 +56,10 @@ public class ChallengeHistory {
     }
 
     public void cancel() {
-        this.challengeStatus = ChallengeStatus.CANCEL;
+        this.challengeStatus = ChallengeStatus.FAIL;
     }
 
     public void fail() {
-        this.challengeStatus = ChallengeStatus.FAIL;
+        this.challengeStatus = ChallengeStatus.RETRY;
     }
 }

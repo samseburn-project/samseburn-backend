@@ -72,14 +72,14 @@ public class ChallengeHistoryService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
-      
+
         if (challenge.getChallengeProgress() == ChallengeProgress.STOP) {
             throw new ApiRequestException("종료된 챌린지에 참여할 수 없습니다.");
         }
 
         //해당 챌린지와 유저로 히스토리 찾아와서 fail 갯수 가져오기
-        List<ChallengeHistory> user1 = challengeHistoryRepository.findAllByChallengeAndUserAndChallengeStatus(challenge, user, ChallengeStatus.FAIL);
-        if (user1.size() >= 3) throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
+        ChallengeHistory user1 = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        if (user1.getRetryCount() >= 3) throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
 
         LocalDateTime now = LocalDateTime.now();
         ChallengeHistory challengeHistory = new ChallengeHistory(
@@ -118,7 +118,7 @@ public class ChallengeHistoryService {
     // 작업중
     public List<UserChallengeInfoDto> getChallengesByUser(User user) {
 
-        return challengeHistoryRepository.findAllByUser(user).stream()
+        return challengeHistoryRepository.findDistinctChallengeByOrderByCreatedDate(user).stream()
                 .map(challengeHistory -> new UserChallengeInfoDto(
                         challengeHistory.getChallenge(), challengeHistory,
                         certificationRepository.findAllByChallengeAndUser(challengeHistory.getChallenge(), user),
