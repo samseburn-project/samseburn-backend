@@ -78,20 +78,23 @@ public class ChallengeHistoryService {
         }
 
         //해당 챌린지와 유저로 히스토리 찾아와서 fail 갯수 가져오기
-        ChallengeHistory user1 = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
-        if (user1.getRetryCount() >= 3) throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
+        ChallengeHistory userHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        if (userHistory == null) {
+            LocalDateTime now = LocalDateTime.now();
+            ChallengeHistory challengeHistory = new ChallengeHistory(
+                    user,
+                    challenge,
+                    now,
+                    now.plusDays(7),
+                    ChallengeStatus.JOIN,
+                    FirstWeekMission.NO,
+                    0);
+            challengeHistoryRepository.save(challengeHistory);
+        } else if (userHistory.getRetryCount() >= 3) {
+            throw new ApiRequestException("챌린지에 참여할 수 없습니다.");
+        }
 
-        LocalDateTime now = LocalDateTime.now();
-        ChallengeHistory challengeHistory = new ChallengeHistory(
-                user,
-                challenge,
-                now,
-                now.plusDays(7),
-                ChallengeStatus.JOIN,
-                FirstWeekMission.NO,
-                0);
 
-        challengeHistoryRepository.save(challengeHistory);
     }
 
     @Transactional
@@ -122,8 +125,6 @@ public class ChallengeHistoryService {
                 )).collect(Collectors.toList());
     }
 
-
-
     // 재도전 챌린지
     @Transactional
     public void retryChallenge(Long challengeId, User user) {
@@ -137,6 +138,7 @@ public class ChallengeHistoryService {
         challengeHistory.retry(); // 해당 챌린지 상태값 RETRY -> JOIN 으로 변경
 
         challengeHistory.addRetryCount(); // RETRY COUNT +1
+    }
 
     @Transactional
     public void continueChallenge(Long challengeId, User user) {
