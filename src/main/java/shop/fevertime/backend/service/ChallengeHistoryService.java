@@ -112,6 +112,8 @@ public class ChallengeHistoryService {
         //참여 취소시 해당 챌린지히스토리 삭제 (완전 다)
         challengeHistoryRepository.delete(
                 challengeHistoryRepository.findByChallengeAndUser(challenge, user));
+        //해당 인증도 삭제
+        certificationRepository.deleteAll(certificationRepository.findAllByChallengeAndUser(challenge, user));
     }
 
     // 연관된 챌린지
@@ -159,5 +161,7 @@ public class ChallengeHistoryService {
         //그만두기시 해당 챌린지히스토리 삭제 (완전 다)
         challengeHistoryRepository.delete(
                 challengeHistoryRepository.findByChallengeAndUser(challenge, user));
+        //해당 인증도 삭제
+        certificationRepository.deleteAll(certificationRepository.findAllByChallengeAndUser(challenge, user));
     }
 }
