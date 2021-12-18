@@ -13,14 +13,14 @@ import java.time.format.DateTimeFormatter;
 @Setter
 public class UserChallengeResponseDto {
     private String title;
-    private String startDate;
-    private String endDate;
+    private String challengeStartDate;
+    private String challengeEndDate;
     private Long challengeId;
 
     public UserChallengeResponseDto(Challenge challenge) {
         this.title = challenge.getTitle();
-        this.startDate = challenge.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        this.endDate = challenge.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.challengeStartDate = challenge.getStartDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.challengeEndDate = challenge.getEndDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         this.challengeId = challenge.getId();
     }
 }

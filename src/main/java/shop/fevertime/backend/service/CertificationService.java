@@ -28,7 +28,10 @@ public class CertificationService {
     private final ChallengeRepository challengeRepository;
 
     public List<CertificationResponseDto> getCertifications(Long challengeId) {
-        return certificationRepository.findAllByChallengeId(challengeId)
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+                () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
+        );
+        return certificationRepository.findAllByChallenge(challenge)
                 .stream()
                 .map(CertificationResponseDto::new)
                 .collect(Collectors.toList());
