@@ -38,7 +38,7 @@ public class ChallengeService {
         List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
         Page<Challenge> getChallenges;
 
-        PageRequest pageRequest = PageRequest.of(page, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(page - 1, 9);
 
         if (Objects.equals(category, "All")) {
             getChallenges = challengeRepository.findAll(pageRequest);
