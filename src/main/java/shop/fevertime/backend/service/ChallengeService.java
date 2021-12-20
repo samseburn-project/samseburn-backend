@@ -1,6 +1,8 @@
 package shop.fevertime.backend.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,16 +34,18 @@ public class ChallengeService {
     private final S3Uploader s3Uploader;
     private final ChallengeHistoryService challengeHistoryService;
 
-    public List<ChallengeResponseDto> getChallenges(String category) {
+    public List<ChallengeResponseDto> getChallenges(String category, int page) {
         List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
-        List<Challenge> getChallenges;
+        Page<Challenge> getChallenges;
+
+        PageRequest pageRequest = PageRequest.of(page, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         if (Objects.equals(category, "All")) {
-            getChallenges = challengeRepository.findAll();
+            getChallenges = challengeRepository.findAll(pageRequest);
         } else {
-            getChallenges = challengeRepository.findAllByCategoryNameEquals(category);
+            getChallenges = challengeRepository.findAllByCategoryNameEquals(category, pageRequest);
         }
-        getChallengesWithParticipants(challengeResponseDtoList, getChallenges);
+        getChallengesWithParticipants(challengeResponseDtoList, getChallenges.getContent());
         return challengeResponseDtoList;
     }
 
