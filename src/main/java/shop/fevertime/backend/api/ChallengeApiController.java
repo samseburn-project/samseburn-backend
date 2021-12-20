@@ -24,8 +24,10 @@ public class ChallengeApiController {
      * 카테고리별 챌린지 조회 API
      */
     @GetMapping("/challenges")
-    public List<ChallengeResponseDto> getChallenges(@RequestParam("kind") String category) {
-        return challengeService.getChallenges(category);
+    public List<ChallengeResponseDto> getChallenges(
+            @RequestParam("kind") String category,
+            @RequestParam("page") int page) {
+        return challengeService.getChallenges(category, page);
     }
 
     /**
