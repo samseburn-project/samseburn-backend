@@ -74,8 +74,8 @@ public class ChallengeValidator {
     }
     public static void validateUpdate(String imgUrl, String address) {
 
-        if (imgUrl == null) {
-            throw new ApiRequestException("첨부된 파일이 없습니다.");
+        if (!URLValidator.urlValidator(imgUrl)) {
+            throw new ApiRequestException("이미지 링크를 확인해주세요.");
         }
     }
 

@@ -2,10 +2,13 @@ package shop.fevertime.backend.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import shop.fevertime.backend.domain.Certification;
 import shop.fevertime.backend.domain.Challenge;
 import shop.fevertime.backend.domain.User;
+import shop.fevertime.backend.dto.request.CertiUpdateRequestDto;
 import shop.fevertime.backend.dto.request.CertificationRequestDto;
+import shop.fevertime.backend.dto.request.ChallengeUpdateRequestDto;
 import shop.fevertime.backend.dto.response.CertificationResponseDto;
 import shop.fevertime.backend.dto.response.ResultResponseDto;
 import shop.fevertime.backend.exception.ApiRequestException;
@@ -17,6 +20,8 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -61,6 +66,15 @@ public class CertificationService {
                 challenge
         );
         certificationRepository.save(certification);
+    }
+
+    @Transactional
+    public void updateCertification(Long certiId, CertiUpdateRequestDto requestDto, User user) {
+        Certification certification = certificationRepository.findByIdAndUser(certiId, user).orElseThrow(
+                () -> new ApiRequestException("해당 챌린지 인증이 존재하지 않습니다.")
+        );
+        // 해당 인증의 필드 값을 변경 -> 변경 감지
+        certification.update(requestDto.getContents());
     }
 
     public void deleteCertification(Long certiId, User user) {

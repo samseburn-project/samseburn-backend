@@ -38,4 +38,9 @@ public class Certification extends BaseTimeEntity {
         this.user = user;
         this.challenge = challenge;
     }
+
+    public void update(String contents) {
+        CertificationValidator.validateUpdatContents(contents);
+        this.contents = contents;
+    }
 }
