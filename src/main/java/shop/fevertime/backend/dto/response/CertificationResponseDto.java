@@ -20,6 +20,6 @@ public class CertificationResponseDto {
         this.userId = certification.getUser().getUsername();
         this.imgUrl = certification.getImgUrl();
         this.contents = certification.getContents();
-        this.createdDate = certification.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        this.createdDate = certification.getCreatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm:ss"));
     }
 }
