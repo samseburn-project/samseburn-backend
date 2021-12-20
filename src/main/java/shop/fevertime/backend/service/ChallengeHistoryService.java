@@ -37,11 +37,12 @@ public class ChallengeHistoryService {
                 .map(CertificationResponseDto::new)
                 .collect(Collectors.toList());
         // 챌린지 참여 내역
-        List<ChallengeHistoryResponseDto> userHistories = challengeHistoryRepository.findAllByChallengeAndUser(challenge, user).stream()
-                .map(ChallengeHistoryResponseDto::new)
-                .collect(Collectors.toList());
+        ChallengeHistory userHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
 
-        return new ChallengeUserResponseDto(user, certifies, userHistories);
+        // 추가
+        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+
+        return new ChallengeUserResponseDto(user, certifies, userHistory, challengeHistory);
     }
 
     @Transactional
