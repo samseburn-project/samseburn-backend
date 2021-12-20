@@ -3,7 +3,10 @@ package shop.fevertime.backend.api;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import shop.fevertime.backend.dto.request.CertiUpdateRequestDto;
 import shop.fevertime.backend.dto.request.CertificationRequestDto;
+import shop.fevertime.backend.dto.request.ChallengeUpdateRequestDto;
 import shop.fevertime.backend.dto.response.CertificationResponseDto;
 import shop.fevertime.backend.dto.response.ResultResponseDto;
 import shop.fevertime.backend.security.UserDetailsImpl;
@@ -46,6 +49,17 @@ public class CertificationApiController {
             @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
         certificationService.createCertification(challengeId, requestDto, userDetails.getUser());
         return new ResultResponseDto("success", "챌린지 인증되었습니다.");
+    }
+
+    /**
+     * 챌린지 인증 수정 API
+     */
+    @PutMapping("/challenges/{challengeId}/certis/{certiId}")
+    public ResultResponseDto updateCertification(@PathVariable Long certiId,
+                                                 @ModelAttribute CertiUpdateRequestDto requestDto,
+                                                 @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        certificationService.updateCertification(certiId, requestDto, userDetails.getUser());
+        return new ResultResponseDto("success", "챌린지 인증 수정되었습니다.");
     }
 
     /**

@@ -30,4 +30,14 @@ public class CertificationValidator {
             throw new ApiRequestException("챌린지 정보가 유효하지 않습니다.");
         }
     }
+
+    /**
+     * 인증 변경 validation
+     */
+    public static void validateUpdatContents(String contents) {
+        if (contents == null || contents.trim().length() == 0) {
+            throw new ApiRequestException("챌린지 인증 내용이 없습니다.");
+        }
+
+    }
 }
