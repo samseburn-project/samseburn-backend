@@ -1,5 +1,7 @@
 package shop.fevertime.backend.repository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import shop.fevertime.backend.domain.Challenge;
 import shop.fevertime.backend.domain.ChallengeProgress;
@@ -12,7 +14,9 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     List<Challenge> findAllByTitleContaining(String title);
 
-    List<Challenge> findAllByCategoryNameEquals(String category);
+    Page<Challenge> findAllByCategoryNameEquals(String category, Pageable pageable);
+
+    Page<Challenge> findAll(Pageable pageable);
 
     List<Challenge> findAllByUser(User user);
 
