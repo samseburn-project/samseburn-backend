@@ -38,7 +38,8 @@ public class ChallengeHistoryService {
                 .collect(Collectors.toList());
         // 추가
 
-        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user)
+                .orElseThrow( () -> new ApiRequestException("존재하지 않는 챌린지 기록입니다."));
 
         return new ChallengeUserResponseDto(user, certifies, challengeHistory);
     }
@@ -77,7 +78,8 @@ public class ChallengeHistoryService {
         }
 
         //해당 챌린지와 유저로 히스토리 찾아와서 fail 갯수 가져오기
-        ChallengeHistory userHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        ChallengeHistory userHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user)
+                .orElseThrow( () -> new ApiRequestException("존재하지 않는 챌린지 기록입니다."));
         if (userHistory == null) {
             LocalDateTime now = LocalDateTime.now();
             ChallengeHistory challengeHistory = new ChallengeHistory(
@@ -110,7 +112,8 @@ public class ChallengeHistoryService {
 
         //참여 취소시 해당 챌린지히스토리 삭제 (완전 다)
         challengeHistoryRepository.delete(
-                challengeHistoryRepository.findByChallengeAndUser(challenge, user));
+                challengeHistoryRepository.findByChallengeAndUser(challenge, user)
+                        .orElseThrow( () -> new ApiRequestException("존재하지 않는 챌린지 기록입니다.")));
         //해당 인증도 삭제
         certificationRepository.deleteAll(certificationRepository.findAllByChallengeAndUser(challenge, user));
     }
@@ -132,7 +135,8 @@ public class ChallengeHistoryService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("존재하지 않는 챌린지입니다.")
         );
-        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user)
+                .orElseThrow( () -> new ApiRequestException("존재하지 않는 챌린지 기록입니다."));
         if (challengeHistory.getRetryCount() >= 3) {
             throw new ApiRequestException("재도전은 3번까지 가능합니다.");
         }
@@ -146,7 +150,8 @@ public class ChallengeHistoryService {
         Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
-        ChallengeHistory history = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
+        ChallengeHistory history = challengeHistoryRepository.findByChallengeAndUser(challenge, user)
+                .orElseThrow( () -> new ApiRequestException("존재하지 않는 챌린지 기록입니다."));
 
         //히스토리에 FirstWeekMission.YES로 업데이트
         history.continueChallenge();
@@ -159,7 +164,8 @@ public class ChallengeHistoryService {
         );
         //그만두기시 해당 챌린지히스토리 삭제 (완전 다)
         challengeHistoryRepository.delete(
-                challengeHistoryRepository.findByChallengeAndUser(challenge, user));
+                challengeHistoryRepository.findByChallengeAndUser(challenge, user)
+                        .orElseThrow( () -> new ApiRequestException("존재하지 않는 챌린지 기록입니다.")));
         //해당 인증도 삭제
         certificationRepository.deleteAll(certificationRepository.findAllByChallengeAndUser(challenge, user));
     }
