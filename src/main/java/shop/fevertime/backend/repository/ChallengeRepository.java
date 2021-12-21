@@ -22,7 +22,11 @@ public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     Optional<Challenge> findByIdAndUser(Long challengeId, User user);
 
+    Page<Challenge> findAllByChallengeProgressAndCategoryNameEquals(ChallengeProgress challengeProgress, String category, Pageable pageable);
+
     List<Challenge> findAllByChallengeProgress(ChallengeProgress challengeProgress);
+
+    Page<Challenge> findAllByChallengeProgress(ChallengeProgress challengeProgress, Pageable pageable);
 
 
 }

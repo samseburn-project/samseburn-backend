@@ -26,18 +26,10 @@ public class ChallengeApiController {
     @GetMapping("/challenges")
     public List<ChallengeResponseDto> getChallenges(
             @RequestParam("kind") String category,
-            @RequestParam("page") int page) {
-        return challengeService.getChallenges(category, page);
+            @RequestParam("page") int page,
+            @RequestParam("sortBy") String sortBy) {
+        return challengeService.getChallenges(category, page, sortBy);
     }
-
-    /**
-     * 챌린지 정렬 필터 API
-     */
-    @GetMapping("/challenges/filter")
-    public List<ChallengeResponseDto> getChallengesByFilter(@RequestParam("sortBy") String sortBy) {
-        return challengeService.getChallengesByFilter(sortBy);
-    }
-
 
     /**
      * 챌린지 검색 API
