@@ -27,18 +27,17 @@ public class ChallengeUserResponseDto {
     private List<CertificationResponseDto> certifies;
 
 
-    public ChallengeUserResponseDto(User user, List<CertificationResponseDto> certifies, ChallengeHistory userHistory,
-                                    ChallengeHistory challengeHistory) {
+    public ChallengeUserResponseDto(User user, List<CertificationResponseDto> certifies, ChallengeHistory userHistory) {
         this.userId = user.getId();
         this.username = user.getUsername();
         this.userimgUrl = user.getImgUrl();
         this.certifies = certifies;
         this.challengeStatus = userHistory.getChallengeStatus().toString();
         this.certiCount = certifies.size();
-        this.retryCount = challengeHistory.getRetryCount();
-        this.userStartDate = challengeHistory.getCreatedDate().toString();
-        this.userMissionDate = challengeHistory.getMissionDate().toString();
-        this.firstWeekMission = challengeHistory.getFirstWeekMission().toString();
+        this.retryCount = userHistory.getRetryCount();
+        this.userStartDate = userHistory.getCreatedDate().toString();
+        this.userMissionDate = userHistory.getMissionDate().toString();
+        this.firstWeekMission = userHistory.getFirstWeekMission().toString();
 
     }
 }
