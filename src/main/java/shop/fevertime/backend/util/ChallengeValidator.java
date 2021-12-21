@@ -30,6 +30,10 @@ public class ChallengeValidator {
             throw new ApiRequestException("챌린지 이름이 없습니다.");
         }
 
+        if (title.length() > 20) {
+            throw new ApiRequestException("챌린지 이름은 20자 이하로 입력해주세요.");
+        }
+
         if (description == null || description.trim().length() == 0) {
             throw new ApiRequestException("챌린지 상세 설명이 없습니다.");
         }
@@ -72,6 +76,7 @@ public class ChallengeValidator {
         //address 상의 후
 
     }
+
     public static void validateUpdate(String imgUrl, String address) {
 
         if (!URLValidator.urlValidator(imgUrl)) {

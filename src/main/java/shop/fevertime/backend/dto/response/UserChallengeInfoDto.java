@@ -28,7 +28,7 @@ public class UserChallengeInfoDto {
     private int certiCount; // 인증 횟수
     private int retryCount; // 재도전 횟수
     private String userStartDate; // 챌린지 미션 시작 날짜
-    private String userMissonDate; // 챌린지 미션 종료 날짜
+    private String userMissionDate; // 챌린지 미션 종료 날짜
     private String firstWeekMission;
 
     //    private String description;
@@ -47,7 +47,7 @@ public class UserChallengeInfoDto {
         this.certiCount = certification.size();
         this.retryCount = challengeHistory.getRetryCount();
         this.userStartDate = challengeHistory.getCreatedDate().toString();
-        this.userMissonDate = challengeHistory.getMissionDate().toString();
+        this.userMissionDate = challengeHistory.getMissionDate().toString();
         this.firstWeekMission = challengeHistory.getFirstWeekMission().toString();
 
 
