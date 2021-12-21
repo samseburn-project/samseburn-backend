@@ -38,7 +38,7 @@ public class ChallengeService {
         List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
         Page<Challenge> getChallenges;
 
-        PageRequest pageRequest = PageRequest.of(page - 1, 9);
+        PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         if (Objects.equals(category, "All")) {
             getChallenges = challengeRepository.findAll(pageRequest);
@@ -67,9 +67,7 @@ public class ChallengeService {
 
 
     public ChallengeResponseDto getChallenge(Long challengeId) {
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
-                () -> new ApiRequestException("해당 아이디가 존재하지 않습니다.")
-        );
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(() -> new ApiRequestException("해당 아이디가 존재하지 않습니다."));
         // 챌린지 참여자 수
         long participants = challengeHistoryRepository.countDistinctUserByChallengeAndChallengeStatus(challenge, ChallengeStatus.JOIN);
         return new ChallengeResponseDto(challenge, participants);
@@ -108,23 +106,9 @@ public class ChallengeService {
         }
 
         // 카테고리 찾기
-        Category category = categoryRepository.findByName(requestDto.getCategory()).orElseThrow(
-                () -> new ApiRequestException("카테고리 정보 찾기 실패")
-        );
+        Category category = categoryRepository.findByName(requestDto.getCategory()).orElseThrow(() -> new ApiRequestException("카테고리 정보 찾기 실패"));
         // 챌린지 생성
-        Challenge challenge = new Challenge(
-                requestDto.getTitle(),
-                requestDto.getDescription(),
-                uploadImageUrl,
-                LocalDateTimeUtil.getLocalDateTime(requestDto.getChallengeStartDate()),
-                LocalDateTimeUtil.getLocalDateTime(requestDto.getChallengeEndDate()),
-                requestDto.getLimitPerson(),
-                requestDto.getLocationType(),
-                requestDto.getAddress(),
-                user,
-                category,
-                ChallengeProgress.INPROGRESS
-        );
+        Challenge challenge = new Challenge(requestDto.getTitle(), requestDto.getDescription(), uploadImageUrl, LocalDateTimeUtil.getLocalDateTime(requestDto.getChallengeStartDate()), LocalDateTimeUtil.getLocalDateTime(requestDto.getChallengeEndDate()), requestDto.getLimitPerson(), requestDto.getLocationType(), requestDto.getAddress(), user, category, ChallengeProgress.INPROGRESS);
         challengeRepository.save(challenge);
         //챌린지 생성한 유저는 자동으로 챌린지 참가 상태로 저장
         challengeHistoryService.joinChallenge(challenge.getId(), user);

@@ -29,20 +29,18 @@ public class ChallengeHistoryService {
     @Transactional
     public ChallengeUserResponseDto getChallengeHistoryUser(Long challengeId, User user) {
         // 챌린지 찾기
-        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
+        Challenge challenge = challengeRepository.findByIdAndUser(challengeId, user).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
         // 유저가 챌린지 인증한 리스트 찾기
         List<CertificationResponseDto> certifies = certificationRepository.findAllByChallengeAndUser(challenge, user).stream()
                 .map(CertificationResponseDto::new)
                 .collect(Collectors.toList());
-        // 챌린지 참여 내역
-        ChallengeHistory userHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
-
         // 추가
+
         ChallengeHistory challengeHistory = challengeHistoryRepository.findByChallengeAndUser(challenge, user);
 
-        return new ChallengeUserResponseDto(user, certifies, userHistory, challengeHistory);
+        return new ChallengeUserResponseDto(user, certifies, challengeHistory);
     }
 
     @Transactional
