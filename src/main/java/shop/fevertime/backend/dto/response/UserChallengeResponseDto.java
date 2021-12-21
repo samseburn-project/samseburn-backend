@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import shop.fevertime.backend.domain.Category;
 import shop.fevertime.backend.domain.Challenge;
+import shop.fevertime.backend.domain.ChallengeProgress;
 import shop.fevertime.backend.domain.LocationType;
 
 import java.time.format.DateTimeFormatter;
@@ -24,6 +25,7 @@ public class UserChallengeResponseDto {
     private String address;
     private String imgUrl;
     private String category;
+    private ChallengeProgress challengeProgress;
 
     public UserChallengeResponseDto(Challenge challenge) {
         this.challengeId = challenge.getId();
@@ -36,6 +38,7 @@ public class UserChallengeResponseDto {
         this.address = challenge.getAddress();
         this.imgUrl = challenge.getImgUrl();
         this.category = challenge.getCategory().getName();
+        this.challengeProgress = challenge.getChallengeProgress();
 
     }
 }
