@@ -38,7 +38,7 @@ class ChallengeTest {
             startDate = LocalDateTimeUtil.getLocalDateTime("2020-01-01");
             endDate = LocalDateTimeUtil.getLocalDateTime("2020-12-12");
             limitPerson = 10;
-            locationType = LocationType.OFFLINE;
+            locationType = LocationType.오프라인;
             address = "강남구";
             user = new User("test", "test@email.com", UserRole.USER, "123456", imgUrl);
             category = new Category("운동");
@@ -70,7 +70,7 @@ class ChallengeTest {
         @DisplayName("정상 케이스_온라인")
         void create_Normal2() {
             // given
-            locationType = LocationType.ONLINE;
+            locationType = LocationType.온라인;
             address = "";
             // when
             Challenge challenge = new Challenge(title, description, imgUrl, startDate, endDate, limitPerson, locationType, address, user, category, ChallengeProgress.INPROGRESS);
@@ -305,7 +305,7 @@ class ChallengeTest {
                 @DisplayName("온라인 챌린지일 경우 address 입력시 예외 발생")
                 void online_challenge_no_address() {
                     // given
-                    locationType = shop.fevertime.backend.domain.LocationType.ONLINE;
+                    locationType = shop.fevertime.backend.domain.LocationType.온라인;
                     address = "판교역";
 
                     // when
