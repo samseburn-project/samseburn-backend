@@ -1,6 +1,6 @@
 package shop.fevertime.backend.domain;
 
 public enum LocationType {
-    ONLINE,
-    OFFLINE
+    온라인,
+    오프라인
 }
