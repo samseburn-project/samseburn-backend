@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import shop.fevertime.backend.dto.request.ChallengeRequestDto;
 import shop.fevertime.backend.dto.request.ChallengeUpdateRequestDto;
 import shop.fevertime.backend.dto.response.ChallengeResponseDto;
+import shop.fevertime.backend.dto.response.ChallengeResponseWithTotalCountDto;
 import shop.fevertime.backend.dto.response.ResultResponseDto;
 import shop.fevertime.backend.security.UserDetailsImpl;
 import shop.fevertime.backend.service.ChallengeService;
@@ -24,20 +25,12 @@ public class ChallengeApiController {
      * 카테고리별 챌린지 조회 API
      */
     @GetMapping("/challenges")
-    public List<ChallengeResponseDto> getChallenges(
+    public ChallengeResponseWithTotalCountDto getChallenges(
             @RequestParam("kind") String category,
-            @RequestParam("page") int page) {
-        return challengeService.getChallenges(category, page);
+            @RequestParam("page") int page,
+            @RequestParam("sortBy") String sortBy) {
+        return challengeService.getChallenges(category, page, sortBy);
     }
-
-    /**
-     * 챌린지 정렬 필터 API
-     */
-    @GetMapping("/challenges/filter")
-    public List<ChallengeResponseDto> getChallengesByFilter(@RequestParam("sortBy") String sortBy) {
-        return challengeService.getChallengesByFilter(sortBy);
-    }
-
 
     /**
      * 챌린지 검색 API

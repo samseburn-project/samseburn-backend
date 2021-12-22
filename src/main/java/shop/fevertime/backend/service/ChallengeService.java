@@ -10,6 +10,7 @@ import shop.fevertime.backend.domain.*;
 import shop.fevertime.backend.dto.request.ChallengeRequestDto;
 import shop.fevertime.backend.dto.request.ChallengeUpdateRequestDto;
 import shop.fevertime.backend.dto.response.ChallengeResponseDto;
+import shop.fevertime.backend.dto.response.ChallengeResponseWithTotalCountDto;
 import shop.fevertime.backend.dto.response.ResultResponseDto;
 import shop.fevertime.backend.exception.ApiRequestException;
 import shop.fevertime.backend.repository.CategoryRepository;
@@ -34,35 +35,33 @@ public class ChallengeService {
     private final S3Uploader s3Uploader;
     private final ChallengeHistoryService challengeHistoryService;
 
-    public List<ChallengeResponseDto> getChallenges(String category, int page) {
+    public ChallengeResponseWithTotalCountDto getChallenges(String category, int page, String sortBy) {
         List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
+        ChallengeResponseWithTotalCountDto challengeResponseWithTotalCountDto;
         Page<Challenge> getChallenges;
 
         PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
 
         if (Objects.equals(category, "All")) {
-            getChallenges = challengeRepository.findAll(pageRequest);
+            if (Objects.equals(sortBy, "inProgress")) {
+                getChallenges = challengeRepository.findAllByChallengeProgress(ChallengeProgress.INPROGRESS, pageRequest);
+            } else if (Objects.equals(sortBy, "createdAt")) {
+                getChallenges = challengeRepository.findAll(pageRequest);
+            } else {
+                throw new ApiRequestException("잘못된 필터 요청입니다.");
+            }
         } else {
-            getChallenges = challengeRepository.findAllByCategoryNameEquals(category, pageRequest);
+            if (Objects.equals(sortBy, "inProgress")) {
+                getChallenges = challengeRepository.findAllByChallengeProgressAndCategoryNameEquals(ChallengeProgress.INPROGRESS, category, pageRequest);
+            } else if (Objects.equals(sortBy, "createdAt")) {
+                getChallenges = challengeRepository.findAllByCategoryNameEquals(category, pageRequest);
+            } else {
+                throw new ApiRequestException("잘못된 필터 요청입니다.");
+            }
         }
         getChallengesWithParticipants(challengeResponseDtoList, getChallenges.getContent());
-        return challengeResponseDtoList;
-    }
-
-
-    public List<ChallengeResponseDto> getChallengesByFilter(String sortBy) {
-        List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
-        List<Challenge> getChallenges;
-        if (Objects.equals(sortBy, "inProgress")) {
-            getChallenges = challengeRepository.findAllByChallengeProgress(ChallengeProgress.INPROGRESS);
-        } else if (Objects.equals(sortBy, "createdAt")) {
-            getChallenges = challengeRepository.findAll(Sort.by(Sort.Direction.DESC, "createdDate"));
-        } else {
-            throw new ApiRequestException("잘못된 필터 요청입니다.");
-        }
-
-        getChallengesWithParticipants(challengeResponseDtoList, getChallenges);
-        return challengeResponseDtoList;
+        challengeResponseWithTotalCountDto = new ChallengeResponseWithTotalCountDto(challengeResponseDtoList, getChallenges.getTotalElements());
+        return challengeResponseWithTotalCountDto;
     }
 
 
