@@ -10,6 +10,7 @@ import shop.fevertime.backend.domain.*;
 import shop.fevertime.backend.dto.request.ChallengeRequestDto;
 import shop.fevertime.backend.dto.request.ChallengeUpdateRequestDto;
 import shop.fevertime.backend.dto.response.ChallengeResponseDto;
+import shop.fevertime.backend.dto.response.ChallengeResponseWithTotalCountDto;
 import shop.fevertime.backend.dto.response.ResultResponseDto;
 import shop.fevertime.backend.exception.ApiRequestException;
 import shop.fevertime.backend.repository.CategoryRepository;
@@ -34,8 +35,9 @@ public class ChallengeService {
     private final S3Uploader s3Uploader;
     private final ChallengeHistoryService challengeHistoryService;
 
-    public List<ChallengeResponseDto> getChallenges(String category, int page, String sortBy) {
+    public ChallengeResponseWithTotalCountDto getChallenges(String category, int page, String sortBy) {
         List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
+        ChallengeResponseWithTotalCountDto challengeResponseWithTotalCountDto;
         Page<Challenge> getChallenges;
 
         PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
@@ -58,7 +60,8 @@ public class ChallengeService {
             }
         }
         getChallengesWithParticipants(challengeResponseDtoList, getChallenges.getContent());
-        return challengeResponseDtoList;
+        challengeResponseWithTotalCountDto = new ChallengeResponseWithTotalCountDto(challengeResponseDtoList, getChallenges.getTotalElements());
+        return challengeResponseWithTotalCountDto;
     }
 
 
