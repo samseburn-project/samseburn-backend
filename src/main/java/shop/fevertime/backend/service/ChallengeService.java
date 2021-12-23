@@ -40,7 +40,7 @@ public class ChallengeService {
         ChallengeResponseWithTotalCountDto challengeResponseWithTotalCountDto;
         Page<Challenge> getChallenges;
 
-        PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.ASC, "startDate"));
 
         if (Objects.equals(category, "All")) {
             if (Objects.equals(sortBy, "inProgress")) {

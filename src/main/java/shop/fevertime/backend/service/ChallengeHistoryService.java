@@ -29,7 +29,7 @@ public class ChallengeHistoryService {
     @Transactional
     public ChallengeUserResponseDto getChallengeHistoryUser(Long challengeId, User user) {
         // 챌린지 찾기
-        Challenge challenge = challengeRepository.findByIdAndUser(challengeId, user).orElseThrow(
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
         // 유저가 챌린지 인증한 리스트 찾기
@@ -56,12 +56,15 @@ public class ChallengeHistoryService {
 
         //찾아온 히스토리 데이터에서 유저와 1주차 미션 여부 가져와야할듯?!
         for (ChallengeHistory history : histories) {
-            userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission()));
+            //해당 챌린지와 유저에 해당되는 인증 리스트
+            List<Certification> certis = certificationRepository.findAllByChallengeAndUser(challenge, history.getUser());
+            userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission(), certis));
         }
+
 
         return userList.stream().
                 map(UserChallengeStatusResponseDto -> new UserCertifiesResponseDto(UserChallengeStatusResponseDto.getUser(),
-                        UserChallengeStatusResponseDto.getUser().getCertificationList(),
+                        UserChallengeStatusResponseDto.getCertifies(),
                         UserChallengeStatusResponseDto.getFirstWeekMission()))
                 .collect(Collectors.toList());
     }
