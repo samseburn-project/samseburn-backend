@@ -40,12 +40,12 @@ public class ChallengeService {
         ChallengeResponseWithTotalCountDto challengeResponseWithTotalCountDto;
         Page<Challenge> getChallenges;
 
-        PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.DESC, "createdDate"));
+        PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.ASC, "startDate"));
 
         if (Objects.equals(category, "All")) {
             if (Objects.equals(sortBy, "inProgress")) {
                 getChallenges = challengeRepository.findAllByChallengeProgress(ChallengeProgress.INPROGRESS, pageRequest);
-            } else if (Objects.equals(sortBy, "createdAt")) {
+            } else if (Objects.equals(sortBy, "startDate")) {
                 getChallenges = challengeRepository.findAll(pageRequest);
             } else {
                 throw new ApiRequestException("잘못된 필터 요청입니다.");
