@@ -45,7 +45,7 @@ public class ChallengeService {
         if (Objects.equals(category, "All")) {
             if (Objects.equals(sortBy, "inProgress")) {
                 getChallenges = challengeRepository.findAllByChallengeProgress(ChallengeProgress.INPROGRESS, pageRequest);
-            } else if (Objects.equals(sortBy, "startDate")) {
+            } else if (Objects.equals(sortBy, "createdAt")) {
                 getChallenges = challengeRepository.findAll(pageRequest);
             } else {
                 throw new ApiRequestException("잘못된 필터 요청입니다.");
