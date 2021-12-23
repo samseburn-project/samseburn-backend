@@ -56,12 +56,15 @@ public class ChallengeHistoryService {
 
         //찾아온 히스토리 데이터에서 유저와 1주차 미션 여부 가져와야할듯?!
         for (ChallengeHistory history : histories) {
-            userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission()));
+            //해당 챌린지와 유저에 해당되는 인증 리스트
+            List<Certification> certis = certificationRepository.findAllByChallengeAndUser(challenge, history.getUser());
+            userList.add(new UserChallengeStatusResponseDto(history.getUser(), history.getFirstWeekMission(), certis));
         }
+
 
         return userList.stream().
                 map(UserChallengeStatusResponseDto -> new UserCertifiesResponseDto(UserChallengeStatusResponseDto.getUser(),
-                        UserChallengeStatusResponseDto.getUser().getCertificationList(),
+                        UserChallengeStatusResponseDto.getCertifies(),
                         UserChallengeStatusResponseDto.getFirstWeekMission()))
                 .collect(Collectors.toList());
     }
