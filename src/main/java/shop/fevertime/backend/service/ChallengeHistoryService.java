@@ -29,7 +29,7 @@ public class ChallengeHistoryService {
     @Transactional
     public ChallengeUserResponseDto getChallengeHistoryUser(Long challengeId, User user) {
         // 챌린지 찾기
-        Challenge challenge = challengeRepository.findByIdAndUser(challengeId, user).orElseThrow(
+        Challenge challenge = challengeRepository.findById(challengeId).orElseThrow(
                 () -> new ApiRequestException("해당 챌린지를 찾을 수 없습니다.")
         );
         // 유저가 챌린지 인증한 리스트 찾기
