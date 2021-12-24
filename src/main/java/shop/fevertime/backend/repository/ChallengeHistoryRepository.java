@@ -8,6 +8,8 @@ import shop.fevertime.backend.domain.ChallengeHistory;
 import shop.fevertime.backend.domain.ChallengeStatus;
 import shop.fevertime.backend.domain.User;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,5 +33,7 @@ public interface ChallengeHistoryRepository extends JpaRepository<ChallengeHisto
     List<ChallengeHistory> findAllByChallengeAndChallengeStatusAndUserNot(Challenge challenge, ChallengeStatus challengeStatus, User user);
 
     void deleteAllByChallenge(Challenge challenge);
+
+    List<ChallengeHistory> findAllByMissionDateBefore(LocalDateTime missionDate);
 
 }

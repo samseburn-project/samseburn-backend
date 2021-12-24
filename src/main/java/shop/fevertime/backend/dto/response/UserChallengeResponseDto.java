@@ -26,8 +26,9 @@ public class UserChallengeResponseDto {
     private String imgUrl;
     private String category;
     private ChallengeProgress challengeProgress;
+    private long participants;
 
-    public UserChallengeResponseDto(Challenge challenge) {
+    public UserChallengeResponseDto(Challenge challenge, long participants) {
         this.challengeId = challenge.getId();
         this.title = challenge.getTitle();
         this.description = challenge.getDescription();
@@ -39,6 +40,7 @@ public class UserChallengeResponseDto {
         this.imgUrl = challenge.getImgUrl();
         this.category = challenge.getCategory().getName();
         this.challengeProgress = challenge.getChallengeProgress();
+        this.participants = participants;
 
     }
 }
