@@ -72,11 +72,18 @@ public class ChallengeService {
         return new ChallengeResponseDto(challenge, participants);
     }
 
-    public List<ChallengeResponseDto> searchChallenges(String search) {
+    public ChallengeResponseWithTotalCountDto searchChallenges(String search, int page) {
         List<ChallengeResponseDto> challengeResponseDtoList = new ArrayList<>();
-        List<Challenge> getChallenges = challengeRepository.findAllByTitleContaining(search);
-        getChallengesWithParticipants(challengeResponseDtoList, getChallenges);
-        return challengeResponseDtoList;
+
+        PageRequest pageRequest = PageRequest.of(page - 1, 9, Sort.by(Sort.Direction.ASC, "startDate"));
+
+        Page<Challenge> getChallenges = challengeRepository.findAllByTitleContaining(search,pageRequest);
+
+        ChallengeResponseWithTotalCountDto challengeList = new ChallengeResponseWithTotalCountDto(challengeResponseDtoList, getChallenges.getTotalElements());
+
+        getChallengesWithParticipants(challengeResponseDtoList, getChallenges.getContent());
+
+        return challengeList;
     }
 
     /**

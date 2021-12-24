@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
-    List<Challenge> findAllByTitleContaining(String title);
+    Page<Challenge> findAllByTitleContaining(String title, Pageable pageable);
 
     Page<Challenge> findAllByCategoryNameEquals(String category, Pageable pageable);
 
