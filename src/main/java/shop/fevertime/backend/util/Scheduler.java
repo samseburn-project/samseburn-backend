@@ -32,6 +32,7 @@ public class Scheduler {
             }
         }
     }
+
     @Scheduled(cron = "0 0 0 * * *")
     @Transactional
     public void updateChallengeStatus() throws ApiRequestException {
