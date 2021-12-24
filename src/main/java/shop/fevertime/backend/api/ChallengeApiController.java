@@ -36,8 +36,10 @@ public class ChallengeApiController {
      * 챌린지 검색 API
      */
     @GetMapping("/challenges/search")
-    public List<ChallengeResponseDto> searchChallenges(@RequestParam("search") String search) {
-        return challengeService.searchChallenges(search);
+    public ChallengeResponseWithTotalCountDto searchChallenges(
+            @RequestParam("search") String search,
+            @RequestParam("page") int page) {
+        return challengeService.searchChallenges(search, page);
     }
 
     /**
