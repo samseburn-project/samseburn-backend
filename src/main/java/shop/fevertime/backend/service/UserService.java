@@ -3,12 +3,15 @@ package shop.fevertime.backend.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import shop.fevertime.backend.domain.Challenge;
+import shop.fevertime.backend.domain.ChallengeStatus;
 import shop.fevertime.backend.domain.User;
 import shop.fevertime.backend.domain.UserRole;
 import shop.fevertime.backend.dto.request.UserRequestDto;
 
 import shop.fevertime.backend.dto.response.UserChallengeResponseDto;
 import shop.fevertime.backend.exception.ApiRequestException;
+import shop.fevertime.backend.repository.ChallengeHistoryRepository;
 import shop.fevertime.backend.repository.ChallengeRepository;
 import shop.fevertime.backend.repository.UserRepository;
 import shop.fevertime.backend.security.kakao.KakaoOAuth2;
@@ -17,10 +20,9 @@ import shop.fevertime.backend.util.S3Uploader;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -29,6 +31,7 @@ public class UserService {
     private final KakaoOAuth2 kakaoOAuth2;
     private final S3Uploader s3Uploader;
     private final ChallengeRepository challengeRepository;
+    private final ChallengeHistoryRepository challengeHistoryRepository;
 
     public String kakaoLogin(String token) {
         // 카카오 OAuth2 를 통해 카카오 사용자 정보 조회
@@ -53,9 +56,16 @@ public class UserService {
 
     @Transactional
     public List<UserChallengeResponseDto> getChallenges(User user) {
-        return challengeRepository.findAllByUser(user).stream()
-                .map(UserChallengeResponseDto::new)
-                .collect(Collectors.toList());
+        List<Challenge> allByUser = challengeRepository.findAllByUser(user);
+
+        List<UserChallengeResponseDto> UserChallengeResponseDtoList = new ArrayList<>();
+
+        for (Challenge byUser : allByUser) {
+            long participants = challengeHistoryRepository.countDistinctUserByChallengeAndChallengeStatus(byUser, ChallengeStatus.JOIN);
+            UserChallengeResponseDto UserChallengeResponseDto = new UserChallengeResponseDto(byUser, participants);
+            UserChallengeResponseDtoList.add(UserChallengeResponseDto);
+        }
+        return UserChallengeResponseDtoList;
     }
 
     @Transactional
