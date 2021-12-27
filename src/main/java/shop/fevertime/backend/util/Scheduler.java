@@ -26,7 +26,7 @@ public class Scheduler {
     private final ChallengeHistoryRepository challengeHistoryRepository;
     private final CertificationRepository certificationRepository;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void updateChallengeProcess() throws ApiRequestException {
         for (Challenge challenge : challengeRepository.findAllByChallengeProgress(ChallengeProgress.INPROGRESS)) {
@@ -36,7 +36,7 @@ public class Scheduler {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void updateChallengeStatus() throws ApiRequestException {
         // 챌린지 mission_date가 됐을 때, 인증 횟수가 3회 넘지 않으면 ( 재도전 기회 있으면 retry 없으면 fail ) -> 해당 인증도 삭제
