@@ -56,7 +56,7 @@ public class Scheduler {
     }
 
 
-    @Scheduled(cron = "0 43 15 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 47 15 ? * *", zone = "Asia/Seoul")
     @Transactional
     public void test() throws ApiRequestException {
 
