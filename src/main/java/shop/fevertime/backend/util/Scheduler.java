@@ -17,6 +17,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
+import java.util.Date;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -55,11 +56,12 @@ public class Scheduler {
     }
 
 
-    @Scheduled(cron = "0 15 15 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 27 15 * * *", zone = "Asia/Seoul")
     @Transactional
     public void test() throws ApiRequestException {
 
-        log.error("스케줄러 오후 3시 15분 ----------------------------------------------");
+        log.error("스케줄러 오후 3시 27분 ----------------------------------------------");
+        log.error("스케줄러 동작" + new Date());
     }
 }
 
