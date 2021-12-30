@@ -15,6 +15,9 @@ spring:
     generate-ddl: true
 
 logging:
+  slack:
+    webhook-uri: ${AWS_SM_SLACK_WEBHOOK_URL}
+  config: classpath:logback-slack.xml
   level:
     org:
       hibernate:
@@ -26,6 +29,9 @@ logging:
       amazonaws:
         util:
           EC2MetadataUtils: error
+
+logging.slack.webhook-uri: https://hooks.slack.com/services/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
+logging.slack.config: classpath:logback-slack.xml
 
 jwt:
   secret: ${JWT_SECRET}

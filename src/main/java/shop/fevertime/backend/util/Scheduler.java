@@ -1,6 +1,7 @@
 package shop.fevertime.backend.util;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import shop.fevertime.backend.domain.Certification;
@@ -19,6 +20,7 @@ import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
+@Slf4j
 @Component
 public class Scheduler {
 
@@ -51,4 +53,13 @@ public class Scheduler {
             }
         }
     }
+
+
+    @Scheduled(cron = "0 15 15 * * *", zone = "Asia/Seoul")
+    @Transactional
+    public void test() throws ApiRequestException {
+
+        log.error("스케줄러 오후 3시 15분 ----------------------------------------------");
+    }
 }
+
