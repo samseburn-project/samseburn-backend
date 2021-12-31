@@ -2,7 +2,7 @@
 <configuration>
     <springProperty name="AWS_SM_SLACK_WEBHOOK_URL" source="logging.slack.webhook-uri"/>
     <appender name="SLACK" class="com.github.maricn.logback.SlackAppender">
-        <webhookUri>${AWS_SM_SLACK_WEBHOOK_URL}</webhookUri>
+        <webhookUri>https://hooks.slack.com/services/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</webhookUri>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %msg %n</pattern>
         </layout>
@@ -10,7 +10,6 @@
         <iconEmoji>:stuck_out_tongue_winking_eye:</iconEmoji>
         <colorCoding>true</colorCoding>
     </appender>
-
 
     <!-- Consol appender 설정 -->
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
@@ -27,7 +26,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="Console" />
+        <appender-ref ref="Console"/>
         <appender-ref ref="ASYNC_SLACK"/>
     </root>
 </configuration>
