@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.GetMapping;
 import shop.fevertime.backend.domain.Certification;
 import shop.fevertime.backend.domain.Challenge;
 import shop.fevertime.backend.domain.ChallengeHistory;
@@ -56,10 +57,15 @@ public class Scheduler {
     }
 
 
-    @Scheduled(cron = "0 50 0 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 47 0 * * *", zone = "Asia/Seoul")
     public void test() throws ApiRequestException {
 
-        log.error("스케줄러 AM 12:50" + new Date());
+        log.error("스케줄러 AM 12:47" + new Date());
+    }
+
+    @GetMapping("/articles")
+    public void getTest() {
+        int i = 1 / 0;
     }
 }
 
