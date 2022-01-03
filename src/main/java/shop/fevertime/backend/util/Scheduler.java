@@ -57,15 +57,10 @@ public class Scheduler {
     }
 
 
-    @Scheduled(cron = "0 47 0 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 52 1 * * *", zone = "Asia/Seoul")
     public void test() throws ApiRequestException {
 
         log.error("스케줄러 AM 12:47" + new Date());
-    }
-
-    @GetMapping("/articles")
-    public void getTest() {
-        int i = 1 / 0;
     }
 }
 
