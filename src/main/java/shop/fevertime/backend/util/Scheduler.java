@@ -55,12 +55,5 @@ public class Scheduler {
             }
         }
     }
-
-
-    @Scheduled(cron = "0 1 2 * * *", zone = "Asia/Seoul")
-    public void test() throws ApiRequestException {
-
-        log.error("스케줄러 AM 12:47" + new Date());
-    }
 }
 

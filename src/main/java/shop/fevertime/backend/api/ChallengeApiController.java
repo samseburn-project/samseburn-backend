@@ -97,9 +97,4 @@ public class ChallengeApiController {
     ) {
         return challengeService.checkChallengeCreator(challengeId, userDetails.getUser());
     }
-
-    @GetMapping("/articles")
-    public void getTest() {
-        int i = 1 / 0;
-    }
 }
