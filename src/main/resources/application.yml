@@ -17,7 +17,7 @@ spring:
 logging:
   slack:
     webhook-uri: ${SLACK_WEBHOOK_URI}
-    config: classpath:logback-slack.xml
+  config: classpath:logback-slack.xml
   level:
     org:
       hibernate:
