@@ -16,7 +16,7 @@ spring:
 
 logging:
   slack:
-    webhook-uri: ${AWS_SM_SLACK_WEBHOOK_URL}
+    webhook-uri: ${SLACK_WEBHOOK_URI}
   config: classpath:logback-slack.xml
   level:
     org:

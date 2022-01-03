@@ -56,10 +56,10 @@ public class Scheduler {
     }
 
 
-    @Scheduled(cron = "0 50 17 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 50 0 * * *", zone = "Asia/Seoul")
     public void test() throws ApiRequestException {
 
-        log.error("스케줄러 PM 5:50" + new Date());
+        log.error("스케줄러 AM 12:50" + new Date());
     }
 }
 
