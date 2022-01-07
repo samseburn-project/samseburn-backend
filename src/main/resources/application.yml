@@ -13,7 +13,7 @@ spring:
     hibernate:
       ddl-auto: none
     generate-ddl: true
-나는 몽총이
+
 logging:
   slack:
     webhook-uri: ${SLACK_WEBHOOK_URI}
