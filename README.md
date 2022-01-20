@@ -27,5 +27,5 @@
 <br/>
 
 ### 🔗 링크
--  사이트 링크 : <a href="https://www.samseburn.site/">https://www.samseburn.site/p</a>
+-  사이트 링크 : <a href="https://www.samseburn.site/">https://www.samseburn.site/</a>
 - <a href="https://solahn.notion.site/5762271734bb46cc9b313a58ce143915">개발문서</a> (API 설계, DB 설계, 화면 설계, Convention)
